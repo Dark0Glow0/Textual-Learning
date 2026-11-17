@@ -26,8 +26,8 @@ This walkthrough uses a simple "Hello World" graph. It is assumed that you have 
 1. Open the graph with **Edit Graph**.
 2. Add an **On Start** event.
 3. Add a **Debug Log** node and connect On Start to it (flow connection).
-4. Add a **String** node with the text `Hello World` and connect it to the `Message` input (data connection).
-5. Press **Play**: "Hello World" should appear in the Console.
+4. Add a **String** node with the text `Hola Mundo` and connect it to the `Message` input (data connection).
+5. Press **Play**: "Hola Mundo" should appear in the Console.
 
 ![Example graph](Images/example-graph.png)
 
