@@ -2,6 +2,7 @@
 ![Image Reference](https://github.com/Dark0Glow0/Textual-Learning/blob/main/Images/Textual%20Visual%20Scripting.png)
 -
 **Add-on for Unity** Created to teach `C#` programming syntax, this tool is specifically designed for **_college students focusing on video games using the Unity engine_**.
+> Textual Learning reads graphs created with Unity Visual Scripting and shows the C# code they represent, so learners can see how each node maps to a line of text code. Developed as part of a thesis project. Work in progress: see the roadmap for the current status.
 ## Requirements and Facilities
 ```
 Unity 6000.3 (6.3 LTS)
@@ -10,7 +11,7 @@ Unity Visual Scripting
 ## How to Install
 1. Open a project in Unity
 2. Install Unity Visual Scripting in the project
-4. Install [Textual Learning folder](https://github.com/Dark0Glow0/Textual-Learning/tree/main/Assets/TextualLearning) in your project's `Asset` folder
+3. Download this repository (**Code > Download ZIP**) and copy the `Assets/TextualLearning` folder into your project's `Assets` folder.
 
 ## Usage
 
