@@ -10,8 +10,7 @@ Unity Visual Scripting
 ## How to Install
 1. Open a project in Unity
 2. Install Unity Visual Scripting in the project
-3. Create a Graph
-4. Install [Textual Learning folder](https://github.com/Dark0Glow0/Textual-Learning/tree/main/Assets/TextualLearning) in your project's asset folder
+4. Install [Textual Learning folder](https://github.com/Dark0Glow0/Textual-Learning/tree/main/Assets/TextualLearning) in your project's `Asset` folder
 
 ## Usage
 
@@ -43,7 +42,7 @@ The window will show the C# equivalent of your graph:
 ```C#
 using UnityEngine;
 
-public class Test: MonoBehaviour
+public class Test : MonoBehaviour
 {
     void Start()
     {
