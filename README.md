@@ -86,7 +86,7 @@ Ideas and suggestions are welcome: open an [issue](https://github.com/Dark0Glow0
 
 ## Credits and License
 
-**Author:** Dark0Glow0
+**Author:** Dark0Glow0 (Benjamin Bravo)
 
 **Built with:**
 - [Unity](https://unity.com/) by Unity Technologies
