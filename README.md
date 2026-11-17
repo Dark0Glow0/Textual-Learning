@@ -4,7 +4,7 @@
 **Add-on for Unity** Created to teach `C#` programming syntax, this tool is specifically designed for **_college students focusing on video games using the Unity engine_**.
 ## Requirements and Facilities
 ```
-Unity 6000.3 (6.3 LTS) or higher
+Unity 6000.3 (6.3 LTS)
 Unity Visual Scripting
 ```
 ## How to Install
