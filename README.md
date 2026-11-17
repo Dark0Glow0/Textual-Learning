@@ -3,7 +3,7 @@
 -
 **Add-on for Unity** Created to teach `C#` programming syntax, this tool is specifically designed for **_college students focusing on video games using the Unity engine_**.
 > Textual Learning reads graphs created with Unity Visual Scripting and shows the C# code they represent, so learners can see how each node maps to a line of text code. Developed as part of a thesis project. Work in progress: see the roadmap for the current status.
-## Requirements and Facilities
+## Requirements
 ```
 Unity 6000.3 (6.3 LTS)
 Unity Visual Scripting
@@ -20,7 +20,7 @@ This walkthrough uses a simple "Hello World" graph. It is assumed that you have 
 ### 1. Create a graph
 1. Create an empty GameObject in your scene.
 2. Add the **Script Machine** component to it.
-3. Click **New** to create a graph and save it as an asset in your project.
+3. Click **New** to create a graph and save it as an asset in your project. For this example, we will name it `Test`.
 
 ### 2. Build the example
 1. Open the graph with **Edit Graph**.
