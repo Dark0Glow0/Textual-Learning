@@ -33,6 +33,7 @@ public class VisualCodeWindow : EditorWindow
         string graphName = "";
         if (graphAsset == null)
         {
+            result.text = string.Empty;
             return;
         }
 
