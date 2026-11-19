@@ -1,13 +1,15 @@
 using Unity.VisualScripting;
 using UnityEditor;
-using UnityEditor.Timeline.Actions;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using System;
+using System.Globalization;
 
 public class VisualCodeWindow : EditorWindow
 {
     private Label result;
+    private ScriptGraphAsset graphAsset;
 
     [MenuItem("Window/Textual Learning/Textual Nodes")] // Creamos La ruta que tendra la ventana
     static void ShowWindow() //Creamos la ventana
@@ -20,12 +22,15 @@ public class VisualCodeWindow : EditorWindow
     {
         ObjectField grafo = new ObjectField("Grafo"); // creamos un campo de interfaz que acepte un objeto dentro de la ventana
         grafo.objectType = typeof(ScriptGraphAsset); // le damos decimos que la variable tiene que ser de tipo ScriptGraphAsset que es un grafro
-        grafo.RegisterValueChangedCallback(evt => ReadGraph(evt.newValue as ScriptGraphAsset)); //con esto le dejamos un recado para que cuando lo cambie ejecute la accion dada
+        grafo.RegisterValueChangedCallback(evt => {graphAsset = evt.newValue as ScriptGraphAsset; ReadGraph(graphAsset);});//con esto le dejamos un recado para que cuando lo cambie ejecute la accion dada
+        grafo.SetValueWithoutNotify(graphAsset);
         rootVisualElement.Add(grafo); // y lo añadimos a nuestra ventana
 
         result = new Label();
         result.style.whiteSpace = WhiteSpace.Pre;
         rootVisualElement.Add(result);
+
+        rootVisualElement.schedule.Execute(() => ReadGraph(graphAsset)).Every(100); // actualiza el texto cada medio segundo
     }
 
     private void ReadGraph(ScriptGraphAsset graphAsset) //creamos el metodo que le los nodos
@@ -40,43 +45,69 @@ public class VisualCodeWindow : EditorWindow
         graphName = graphAsset.name; // escribimos el nombre del grafo en la consola
 
         string startMetodo = "";
-        string isOnStart = "";
+        string eventName = "";
+
+        IUnit eventUnit = null;
 
         foreach (var graphs in graphAsset.graph.units) // con graphAsset.graph.units leemos los nodos
         {
-            if (graphs is Start)
+            if (graphs is Start || graphs is Update)
             {
-                isOnStart = graphs.GetType().Name;
+                eventName = graphs.GetType().Name;
+                eventUnit = graphs;
             }
-        }
-
-        foreach (var connctions in graphAsset.graph.controlConnections) // recorremos la concxion entre start a InvokeMember que seria el flujo
-        {
-            Debug.Log(connctions.source.unit.GetType().Name + " -> " + connctions.destination.unit.GetType().Name);
         }
 
         string conection = "";
+        IUnit current = eventUnit;
+        int safety = 0;
 
-        foreach (var connctions in graphAsset.graph.valueConnections) // recorremos la conecxion entre Liteal a InvokeMember que seria el dato
+        while (current != null && safety < 100)
         {
-            if (connctions.destination.unit is InvokeMember invoke && connctions.source.unit is Literal literal)
+            safety++;
+            
+            if (current is InvokeMember invoke)
             {
-                conection += "      " + invoke.member.targetType.Name + "." + invoke.member.name + "(\"" + literal.value + "\");" + "\n";
+                string value = "null";
+
+                foreach (var data in graphAsset.graph.valueConnections)
+                {
+                    if (data.destination.unit == invoke && data.source.unit is Literal literal)
+                    {
+                        if (literal.type == typeof(string))
+                        {
+                            value = "\"" + literal.value + "\"";
+                        }
+                        else
+                        {
+                            value = Convert.ToString(literal.value, CultureInfo.InvariantCulture).ToLower();
+                        }
+                    }
+                }
+
+                conection += "      " + invoke.member.targetType.Name + "." + invoke.member.name + "(" + value + ");\n";
             }
 
-            Debug.Log(connctions.source.unit.GetType().Name + " -> " + connctions.destination.unit.GetType().Name);
+            IUnit next = null;
+            foreach (var flow in graphAsset.graph.controlConnections)
+            {
+                if (flow.source.unit == current)
+                {
+                    next = flow.destination.unit;
+                }
+            }
+            current = next;
         }
 
-        if (isOnStart != "")
+        if (eventName != "")
         {
             startMetodo = 
-            "    void " + isOnStart + "()\n" +
+            "    void " + eventName + "()\n" +
             "    {\n" +
             conection +
             "    }\n";
         }
 
-        //result.text = clase +"." +metodo + "(\"" + valor + "\");";
         result.text = 
             "using UnityEngine;\n" + 
             "\n" +
