@@ -89,7 +89,7 @@ A Debug Log with no value connected is shown as `Debug.Log(null);`. Only `Debug.
 - **Limited node support.** Only the nodes listed in *Supported nodes* are translated. Unsupported nodes are currently ignored.
 - **One event per graph.** All generated lines go inside a single event method.
 - **Values come from Literal nodes only.** If a value comes from any other kind of node, `null` is shown.
-- **Floats are written without the `f` suffix** (for example `1.5` instead of `1.5f`).
+- **Floats are written without the `f` suffix** (for example, `1.5` instead of `1.5f`).
 - **Script Graphs only.** State Graphs are not supported for now.
 - **Educational focus (for now).** Textual Learning is currently developed as an educational tool, as part of a thesis project. The generated C# is meant to illustrate what a graph does and may not match line by line what Unity executes internally. Broader use, including production workflows, is a possible future direction.
 - **Requires Unity Visual Scripting.** The add-on reads graphs created with that package and does not work without it.
@@ -121,8 +121,6 @@ A Debug Log with no value connected is shown as `Debug.Log(null);`. Only `Debug.
 - [ ] Flag unsupported nodes instead of ignoring them
 - [ ] Export the generated code as a `.cs` file
 - [ ] Spanish translation of this README
-
-Ideas and suggestions are welcome: open an [issue](https://github.com/Dark0Glow0/Textual-Learning/issues).
 
 Ideas and suggestions are welcome: open an [issue](https://github.com/Dark0Glow0/Textual-Learning/issues).
 
