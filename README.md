@@ -1,6 +1,7 @@
 # Textual Learning
 ![Image Reference](https://github.com/Dark0Glow0/Textual-Learning/blob/main/Images/Textual%20Visual%20Scripting.png)
--
+
+
 **Add-on for Unity** Created to teach `C#` programming syntax, this tool is specifically designed for **_college students focusing on video games using the Unity engine_**.
 > Textual Learning reads graphs created with Unity Visual Scripting and shows the C# code they represent, so learners can see how each node maps to a line of text code. Developed as part of a thesis project. Work in progress: see the roadmap for the current status.
 ## Requirements
@@ -37,8 +38,8 @@ Go to **Window > Textual Learning > Textual Nodes**. A window titled "C# Textual
 ### 4. Load your graph
 Drag your graph asset from the Project window into the **Graph** field.
 
-### 5. Read the generated code *(coming soon)*
-The window will show the C# equivalent of your graph:
+### 5. Read the generated code
+The window shows the C# equivalent of your graph, in the same order the nodes run:
 
 ```C#
 using UnityEngine;
@@ -52,12 +53,43 @@ public class Test : MonoBehaviour
 }
 ```
 
+The code refreshes automatically (about every half second), so you can keep editing the graph and watch the text change.
+
+Another example: an **On Update** event followed by two chained **Debug Log** nodes, one with an Integer `0` and one with a Boolean (unchecked), produces:
+
+```csharp
+using UnityEngine;
+
+public class Test : MonoBehaviour
+{
+    void Update()
+    {
+        Debug.Log(0);
+        Debug.Log(false);
+    }
+}
+```
+
 > **Note:** This tool is read-only. It does not modify your graph or run any code.
+
+## Supported nodes
+
+| Node | Generated C# |
+|---|---|
+| On Start | `void Start()` |
+| On Update | `void Update()` |
+| Debug Log (member call) | `Debug.Log(value);` |
+| Literal (String, Integer, Float, Boolean) | `"text"`, `5`, `1.5`, `true` |
+
+A Debug Log with no value connected is shown as `Debug.Log(null);`. Only `Debug.Log` has been tested as a member call.
 
 ## Limitations
 
 - **Read-only.** Textual Learning displays your graph as code; it does not edit the graph, and it does not run or compile anything.
-- **Limited node support.** Only a small set of nodes will be translated at first (see the roadmap). Unsupported nodes will be flagged instead of silently skipped.
+- **Limited node support.** Only the nodes listed in *Supported nodes* are translated. Unsupported nodes are currently ignored.
+- **One event per graph.** All generated lines go inside a single event method.
+- **Values come from Literal nodes only.** If a value comes from any other kind of node, `null` is shown.
+- **Floats are written without the `f` suffix** (for example, `1.5` instead of `1.5f`).
 - **Script Graphs only.** State Graphs are not supported for now.
 - **Educational focus (for now).** Textual Learning is currently developed as an educational tool, as part of a thesis project. The generated C# is meant to illustrate what a graph does and may not match line by line what Unity executes internally. Broader use, including production workflows, is a possible future direction.
 - **Requires Unity Visual Scripting.** The add-on reads graphs created with that package and does not work without it.
@@ -66,19 +98,27 @@ public class Test : MonoBehaviour
 ## Roadmap
 
 **Done**
+**Done**
 - [x] Editor window under `Window > Textual Learning > Textual Nodes`
 - [x] Graph field that only accepts Script Graph assets
 - [x] The window detects when a graph is assigned or removed
+- [x] Read the nodes and connections inside a graph
+- [x] Translate the "Hello World" graph (On Start → Debug Log → String) to C#
+- [x] Follow the flow connections so lines come out in execution order
+- [x] Typed values (String, Integer, Float, Boolean) and `null` for empty inputs
+- [x] On Start and On Update events
+- [x] Automatic refresh while the graph is edited
 
 **In progress**
-- [ ] Read the nodes and connections inside a graph
+- [ ] Visual style of the code panel
 
 **Planned**
-- [ ] Translate the "Hello World" graph (On Start → Debug Log → String) to C#
-- [ ] Read-only code panel with syntax highlighting
+- [ ] Syntax highlighting in the code panel
 - [ ] Highlight the code line that corresponds to a selected node, and vice versa
 - [ ] Short explanation of each node next to its code
 - [ ] Support for variables, math operations, `if` and loops
+- [ ] More than one event per graph
+- [ ] Flag unsupported nodes instead of ignoring them
 - [ ] Export the generated code as a `.cs` file
 - [ ] Spanish translation of this README
 
