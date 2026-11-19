@@ -30,7 +30,7 @@ public class VisualCodeWindow : EditorWindow
         result.style.whiteSpace = WhiteSpace.Pre;
         rootVisualElement.Add(result);
 
-        rootVisualElement.schedule.Execute(() => ReadGraph(graphAsset)).Every(100); // actualiza el texto cada medio segundo
+        rootVisualElement.schedule.Execute(() => ReadGraph(graphAsset)).Every(500); // actualiza el texto cada medio segundo
     }
 
     private void ReadGraph(ScriptGraphAsset graphAsset) //creamos el metodo que le los nodos
