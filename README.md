@@ -55,8 +55,6 @@ public class Test : MonoBehaviour
 
 The code refreshes automatically (about every half second), so you can keep editing the graph and watch the text change.
 
-If the graph has several events (for example On Start and On Update), each one gets its own method.
-
 Another example: an **On Update** event followed by two chained **Debug Log** nodes, one with an Integer `0` and one with a Boolean (unchecked), produces:
 
 ```csharp
@@ -71,6 +69,25 @@ public class Test : MonoBehaviour
     }
 }
 ```
+A graph can also contain several events. For example, an **On Start** event with a Debug Log (String `Hola Mundo`) and an **On Update** event with a Debug Log (Boolean, unchecked) produces one method per event:
+
+```csharp
+using UnityEngine;
+
+public class Test : MonoBehaviour
+{
+    void Start()
+    {
+        Debug.Log("Hola Mundo");
+    }
+    void Update()
+    {
+        Debug.Log(false);
+    }
+}
+```
+
+The order of the methods may vary.
 
 > **Note:** This tool is read-only. It does not modify your graph or run any code.
 
