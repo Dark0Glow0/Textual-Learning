@@ -98,7 +98,6 @@ A Debug Log with no value connected is shown as `Debug.Log(null);`. Only `Debug.
 ## Roadmap
 
 **Done**
-**Done**
 - [x] Editor window under `Window > Textual Learning > Textual Nodes`
 - [x] Graph field that only accepts Script Graph assets
 - [x] The window detects when a graph is assigned or removed
@@ -108,19 +107,25 @@ A Debug Log with no value connected is shown as `Debug.Log(null);`. Only `Debug.
 - [x] Typed values (String, Integer, Float, Boolean) and `null` for empty inputs
 - [x] On Start and On Update events
 - [x] Automatic refresh while the graph is edited
+- [x] Dark code panel with syntax colors
 
 **In progress**
-- [ ] Visual style of the code panel
+- [ ] Code cleanup and comments
 
-**Planned**
-- [ ] Syntax highlighting in the code panel
-- [ ] Highlight the code line that corresponds to a selected node, and vice versa
+**Next**
+- [ ] Automatic node translation: one translation rule per node type, so supporting a new node does not require rewriting the generator
 - [ ] Short explanation of each node next to its code
-- [ ] Support for variables, math operations, `if` and loops
 - [ ] More than one event per graph
+- [ ] Support for variables, math operations, `if` and loops
 - [ ] Flag unsupported nodes instead of ignoring them
+- [ ] Highlight the code line that corresponds to a selected node, and vice versa
+- [ ] Monospace font and scrolling in the code panel
 - [ ] Export the generated code as a `.cs` file
 - [ ] Spanish translation of this README
+
+**Thesis phase**
+- [ ] Research and testing
+- [ ] Adjustments based on the results
 
 Ideas and suggestions are welcome: open an [issue](https://github.com/Dark0Glow0/Textual-Learning/issues).
 
