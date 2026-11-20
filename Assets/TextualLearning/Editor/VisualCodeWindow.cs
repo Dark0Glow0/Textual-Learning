@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System;
 using System.Globalization;
+using System.Collections.Generic;
 
 public class VisualCodeWindow : EditorWindow
 {
@@ -27,14 +28,14 @@ public class VisualCodeWindow : EditorWindow
 
     private void CreateGUI() //aqui trabajamos sobre la ventana
     {
-        ObjectField grafo = new ObjectField("Graph"); // creamos un campo de interfaz que acepte un objeto dentro de la ventana
-        grafo.objectType = typeof(ScriptGraphAsset); // le damos decimos que la variable tiene que ser de tipo ScriptGraphAsset que es un grafro
-        grafo.RegisterValueChangedCallback(evt => {graphAsset = evt.newValue as ScriptGraphAsset; ReadGraph(graphAsset);});//con esto le dejamos un recado para que cuando lo cambie ejecute la accion dada
-        grafo.SetValueWithoutNotify(graphAsset);
-        grafo.style.marginTop = 7;
-        grafo.style.marginLeft = 3;
-        grafo.style.marginRight = 3;
-        rootVisualElement.Add(grafo); // y lo añadimos a nuestra ventana
+        ObjectField graph = new ObjectField("Graph"); // creamos un campo de interfaz que acepte un objeto dentro de la ventana
+        graph.objectType = typeof(ScriptGraphAsset); // le damos decimos que la variable tiene que ser de tipo ScriptGraphAsset que es un grafro
+        graph.RegisterValueChangedCallback(evt => {graphAsset = evt.newValue as ScriptGraphAsset; ReadGraph(graphAsset);});//con esto le dejamos un recado para que cuando lo cambie ejecute la accion dada
+        graph.SetValueWithoutNotify(graphAsset);
+        graph.style.marginTop = 7;
+        graph.style.marginLeft = 3;
+        graph.style.marginRight = 3;
+        rootVisualElement.Add(graph); // y lo añadimos a nuestra ventana
 
         result = new Label();
         result.style.whiteSpace = WhiteSpace.Pre;
@@ -49,7 +50,6 @@ public class VisualCodeWindow : EditorWindow
         result.style.borderTopRightRadius = 6;
         result.style.borderBottomLeftRadius = 6;
         result.style.borderBottomRightRadius = 6;
-        //result.style.flexGrow = 1;
         result.enableRichText = true;
         rootVisualElement.Add(result);
 
@@ -63,82 +63,83 @@ public class VisualCodeWindow : EditorWindow
         if (graphAsset == null)
         {
             result.text = string.Empty;
+            result.style.display = DisplayStyle.None;
             return;
         }
 
         graphName = graphAsset.name; // escribimos el nombre del grafo en la consola
 
         string startMetodo = "";
-        string eventName = "";
-
-        IUnit eventUnit = null;
+        List<IUnit> eventList = new List<IUnit>();
 
         foreach (var graphs in graphAsset.graph.units) // con graphAsset.graph.units leemos los nodos
         {
             if (graphs is Start || graphs is Update)
             {
-                eventName = graphs.GetType().Name;
-                eventUnit = graphs;
+                eventList.Add(graphs);
             }
         }
 
-        string conection = "";
-        IUnit current = eventUnit;
-        int safety = 0;
 
-        while (current != null && safety < 100)
+        foreach (var evenName in eventList)
         {
-            safety++;
+            string conection = "";
+            IUnit current = evenName;
+            int safety = 0;
 
-            
-            if (current is InvokeMember invoke)
+            while (current != null && safety < 100)
             {
-                string value = Paint("null", Blue);
+                safety++;
 
-                foreach (var data in graphAsset.graph.valueConnections)
+
+                if (current is InvokeMember invoke)
                 {
-                    if (data.destination.unit == invoke && data.source.unit is Literal literal)
+                    string value = Paint("null", Blue);
+
+                    foreach (var data in graphAsset.graph.valueConnections)
                     {
-                        if (literal.type == typeof(string))
+                        if (data.destination.unit == invoke && data.source.unit is Literal literal)
                         {
-                            value = Paint("\"" + literal.value + "\"", Orange);
-                        }
-                        else if (literal.type == typeof(bool))
-                        {
-                            value = Paint(Convert.ToString(literal.value, CultureInfo.InvariantCulture).ToLower(), Blue);
-                        }
-                        else
-                        {
-                            value = Paint(Convert.ToString(literal.value, CultureInfo.InvariantCulture), Green);
+                            if (literal.type == typeof(string))
+                            {
+                                value = Paint("\"" + literal.value + "\"", Orange);
+                            }
+                            else if (literal.type == typeof(bool))
+                            {
+                                value = Paint(Convert.ToString(literal.value, CultureInfo.InvariantCulture).ToLower(), Blue);
+                            }
+                            else
+                            {
+                                value = Paint(Convert.ToString(literal.value, CultureInfo.InvariantCulture), Green);
+                            }
                         }
                     }
+
+                    conection += "        " + Paint(invoke.member.targetType.Name, Teal) + "." + Paint(invoke.member.name, Yellow) + "(" + value + ");\n";
                 }
 
-                conection += "        " + Paint(invoke.member.targetType.Name, Teal) + "." + Paint(invoke.member.name, Yellow) + "(" + value + ");\n";
-            }
+                IUnit next = null;
 
-            IUnit next = null;
-            foreach (var flow in graphAsset.graph.controlConnections)
-            {
-                if (flow.source.unit == current)
+                foreach (var flow in graphAsset.graph.controlConnections)
                 {
-                    next = flow.destination.unit;
+                    if (flow.source.unit == current)
+                    {
+                        next = flow.destination.unit;
+                    }
                 }
+                current = next;
             }
-            current = next;
+             startMetodo += "    " +
+                Paint("void", Blue) +
+                " " +
+                Paint(evenName.GetType().Name, Yellow) +
+                "()\n" +
+                "    {\n" +
+                conection +
+                "    }\n";
+            
         }
 
-        if (eventName != "")
-        {
-            startMetodo = "    " +
-            Paint("void", Blue) +
-            " " +
-            Paint(eventName, Yellow) +
-            "()\n" + 
-            "    {\n" +
-            conection +
-            "    }\n";
-        }
 
         result.text = 
             Paint("using", Blue) +
@@ -157,7 +158,9 @@ public class VisualCodeWindow : EditorWindow
             "{\n" +
             startMetodo +
             "}";
+        result.style.display = DisplayStyle.Flex;
     }
+
     private string Paint(string text, string hex) // NUEVO
     {
         return "<color=" + hex + ">" + text + "</color>";
