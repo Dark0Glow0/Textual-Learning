@@ -55,6 +55,8 @@ public class Test : MonoBehaviour
 
 The code refreshes automatically (about every half second), so you can keep editing the graph and watch the text change.
 
+If the graph has several events (for example On Start and On Update), each one gets its own method.
+
 Another example: an **On Update** event followed by two chained **Debug Log** nodes, one with an Integer `0` and one with a Boolean (unchecked), produces:
 
 ```csharp
@@ -76,8 +78,7 @@ public class Test : MonoBehaviour
 
 | Node | Generated C# |
 |---|---|
-| On Start | `void Start()` |
-| On Update | `void Update()` |
+| On Start / On Update | `void Start()` / `void Update()` (one method per event) |
 | Debug Log (member call) | `Debug.Log(value);` |
 | Literal (String, Integer, Float, Boolean) | `"text"`, `5`, `1.5`, `true` |
 
@@ -87,7 +88,6 @@ A Debug Log with no value connected is shown as `Debug.Log(null);`. Only `Debug.
 
 - **Read-only.** Textual Learning displays your graph as code; it does not edit the graph, and it does not run or compile anything.
 - **Limited node support.** Only the nodes listed in *Supported nodes* are translated. Unsupported nodes are currently ignored.
-- **One event per graph.** All generated lines go inside a single event method.
 - **Values come from Literal nodes only.** If a value comes from any other kind of node, `null` is shown.
 - **Floats are written without the `f` suffix** (for example, `1.5` instead of `1.5f`).
 - **Script Graphs only.** State Graphs are not supported for now.
@@ -106,6 +106,7 @@ A Debug Log with no value connected is shown as `Debug.Log(null);`. Only `Debug.
 - [x] Follow the flow connections so lines come out in execution order
 - [x] Typed values (String, Integer, Float, Boolean) and `null` for empty inputs
 - [x] On Start and On Update events
+- [x] Several events per graph, one method for each
 - [x] Automatic refresh while the graph is edited
 - [x] Dark code panel with syntax colors
 
@@ -115,7 +116,6 @@ A Debug Log with no value connected is shown as `Debug.Log(null);`. Only `Debug.
 **Next**
 - [ ] Automatic node translation: one translation rule per node type, so supporting a new node does not require rewriting the generator
 - [ ] Short explanation of each node next to its code
-- [ ] More than one event per graph
 - [ ] Support for variables, math operations, `if` and loops
 - [ ] Flag unsupported nodes instead of ignoring them
 - [ ] Highlight the code line that corresponds to a selected node, and vice versa
@@ -127,7 +127,7 @@ A Debug Log with no value connected is shown as `Debug.Log(null);`. Only `Debug.
 - [ ] Research and testing
 - [ ] Adjustments based on the results
 
-Ideas and suggestions are welcome: open an [issue](https://github.com/Dark0Glow0/Textual-Learning/issues).
+Ideas and suggestions are welcome: open an [issue](https://github.com/Dark0Glow0/Textual-Learning/issues)..
 
 ## Credits and License
 
