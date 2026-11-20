@@ -11,6 +11,13 @@ public class VisualCodeWindow : EditorWindow
     private Label result;
     private ScriptGraphAsset graphAsset;
 
+    private const string Blue = "#569CD6";    // using, public, class, void, true/false
+    private const string Teal = "#4EC9B0";    // nombres de tipos: UnityEngine, MonoBehaviour, Debug
+    private const string Yellow = "#DCDCAA";  // métodos: Update, Log
+    private const string Orange = "#CE9178";  // textos entre comillas
+    private const string Green = "#B5CEA8";   // números
+
+
     [MenuItem("Window/Textual Learning/Textual Nodes")] // Creamos La ruta que tendra la ventana
     static void ShowWindow() //Creamos la ventana
     {
@@ -20,17 +27,34 @@ public class VisualCodeWindow : EditorWindow
 
     private void CreateGUI() //aqui trabajamos sobre la ventana
     {
-        ObjectField grafo = new ObjectField("Grafo"); // creamos un campo de interfaz que acepte un objeto dentro de la ventana
+        ObjectField grafo = new ObjectField("Graph"); // creamos un campo de interfaz que acepte un objeto dentro de la ventana
         grafo.objectType = typeof(ScriptGraphAsset); // le damos decimos que la variable tiene que ser de tipo ScriptGraphAsset que es un grafro
         grafo.RegisterValueChangedCallback(evt => {graphAsset = evt.newValue as ScriptGraphAsset; ReadGraph(graphAsset);});//con esto le dejamos un recado para que cuando lo cambie ejecute la accion dada
         grafo.SetValueWithoutNotify(graphAsset);
+        grafo.style.marginTop = 7;
+        grafo.style.marginLeft = 3;
+        grafo.style.marginRight = 3;
         rootVisualElement.Add(grafo); // y lo añadimos a nuestra ventana
 
         result = new Label();
         result.style.whiteSpace = WhiteSpace.Pre;
+        result.style.backgroundColor = new StyleColor(new Color32(30, 30, 30, 255));
+        result.style.color = new StyleColor (new Color32(220, 220, 220, 255));
+        result.style.marginTop = 2;
+        result.style.paddingTop = 15;
+        result.style.paddingBottom = 15;
+        result.style.paddingLeft = 10;
+        result.style.paddingRight = 10;
+        result.style.borderTopLeftRadius = 6;
+        result.style.borderTopRightRadius = 6;
+        result.style.borderBottomLeftRadius = 6;
+        result.style.borderBottomRightRadius = 6;
+        //result.style.flexGrow = 1;
+        result.enableRichText = true;
         rootVisualElement.Add(result);
 
         rootVisualElement.schedule.Execute(() => ReadGraph(graphAsset)).Every(500); // actualiza el texto cada medio segundo
+
     }
 
     private void ReadGraph(ScriptGraphAsset graphAsset) //creamos el metodo que le los nodos
@@ -65,10 +89,11 @@ public class VisualCodeWindow : EditorWindow
         while (current != null && safety < 100)
         {
             safety++;
+
             
             if (current is InvokeMember invoke)
             {
-                string value = "null";
+                string value = Paint("null", Blue);
 
                 foreach (var data in graphAsset.graph.valueConnections)
                 {
@@ -76,16 +101,20 @@ public class VisualCodeWindow : EditorWindow
                     {
                         if (literal.type == typeof(string))
                         {
-                            value = "\"" + literal.value + "\"";
+                            value = Paint("\"" + literal.value + "\"", Orange);
+                        }
+                        else if (literal.type == typeof(bool))
+                        {
+                            value = Paint(Convert.ToString(literal.value, CultureInfo.InvariantCulture).ToLower(), Blue);
                         }
                         else
                         {
-                            value = Convert.ToString(literal.value, CultureInfo.InvariantCulture).ToLower();
+                            value = Paint(Convert.ToString(literal.value, CultureInfo.InvariantCulture), Green);
                         }
                     }
                 }
 
-                conection += "      " + invoke.member.targetType.Name + "." + invoke.member.name + "(" + value + ");\n";
+                conection += "        " + Paint(invoke.member.targetType.Name, Teal) + "." + Paint(invoke.member.name, Yellow) + "(" + value + ");\n";
             }
 
             IUnit next = null;
@@ -101,19 +130,36 @@ public class VisualCodeWindow : EditorWindow
 
         if (eventName != "")
         {
-            startMetodo = 
-            "    void " + eventName + "()\n" +
+            startMetodo = "    " +
+            Paint("void", Blue) +
+            " " +
+            Paint(eventName, Yellow) +
+            "()\n" + 
             "    {\n" +
             conection +
             "    }\n";
         }
 
         result.text = 
-            "using UnityEngine;\n" + 
+            Paint("using", Blue) +
+            " " +
+            Paint("UnityEngine",Teal) +
+            ";\n" + 
             "\n" +
-            "public class " + graphName + " : MonoBehaviour\n" + 
+            Paint("public", Blue) +
+            " " +
+            Paint("class", Blue) +
+            " "+ 
+            Paint(graphName, Teal) +
+            " : " + 
+            Paint("MonoBehaviour", Teal) +
+            "\n" + 
             "{\n" +
             startMetodo +
             "}";
+    }
+    private string Paint(string text, string hex) // NUEVO
+    {
+        return "<color=" + hex + ">" + text + "</color>";
     }
 }
